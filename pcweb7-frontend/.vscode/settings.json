@@ -1,0 +1,32 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "pcweb",
+            "database": "book_review",
+            "username": "root",
+            "password": "password"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "sql12.freemysqlhosting.net",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "worK_Break",
+            "database": "sql12645135",
+            "username": "sql12645135",
+            "password": "h8unzukyHZ"
+        }
+    ]
+}
