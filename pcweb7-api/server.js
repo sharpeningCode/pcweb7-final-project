@@ -22,20 +22,59 @@ app.listen(port, () => {
 });
 
 // Database table: users
-app.get('/' , (req, res) => {
-    if (req.query.username) {
-        return res.json({valid: true, username: req.session.username})
+async function getUser(id) {
+    const [rows] = await pool.query(
+        "SELECT * FROM users WHERE id = ?", [id]
+    );
+    return rows[0];
+}
+
+async function addUser(username, email, password, role) {
+    const [result] = await pool.query(
+        "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", [username, email, password, role]
+    );
+    const id = result.insertId;
+    return getUser(id);
+}
+
+async function deleteUser(id) {
+    await pool.query(
+        "DELETE FROM users WHERE id = ?", [id]
+    );
+}
+
+app.get("/users/all", async (req, res) => {
+    const all = await getAllLeave();
+    res.send(all).status(200);
+});
+
+app.post('/register', async (req, res) => {
+    const { username, email, password, role } = req.body;
+    const register = await register(username, email, password, role);
+    console.log("User added: ", leave);
+    res.send({ status: "success" }).status(200);
+});
+
+app.get("/user/:id", async(req, res) => {
+    const id = req.params.id;
+    const user = await getUser(id);
+    res.send(user).status(200);
+});
+
+app.delete("/user/:id", async (req, res) => {
+    const id = req.params.id;
+    await deleteUser(id);
+    res.send({ status: "success" }).status(200);
+});
+
+// Holding place for user session
+app.get('/login' , (req, res) => {
+    if (req.session.username) {
+        return res.json({valid: true, role: req.session.role})
     } else {
         return res.json({valid: false})
     }
 })
-
-app.post('/register', async (req, res) => {
-    const { username, email, password, role } = req.body;
-    const register = await addUser(username, email, password, role);
-    console.log("User added: ", leave);
-    res.send({ status: "success" }).status(200);
-});
 
 // Database table: leave_summary
 async function getLeave(id) {

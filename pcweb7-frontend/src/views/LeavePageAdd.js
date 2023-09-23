@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Button, Container, Nav, Navbar, Form, Row, Col } from "react-bootstrap";
+import { Button, Container, Form, Row, Col } from "react-bootstrap";
 import { NumericFormat } from 'react-number-format';
 import { useNavigate, useParams } from "react-router-dom";
 import { ADD, API } from "../constants";
@@ -19,14 +19,6 @@ export default function LeavePageAdd() {
 
   return (
       <>
-        <Navbar variant="light" bg="light">
-          <Container>
-            <Navbar.Brand href="/">worK_Break</Navbar.Brand>
-            <Nav>
-              <Nav.Link href="/">Home</Nav.Link>
-            </Nav>
-          </Container>
-        </Navbar>
         <Container>
         <h1 style={{ marginBlock: "1rem" }}>Add Leave</h1>
         <Form>
