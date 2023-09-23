@@ -2,17 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API, POST } from "../constants";
+
 
 export default function Login() {
   const [error] = useState("");
   const [values, setValues] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
-    const handleInput = (event) => { 
-      setValues(prev => ({...prev, [event.target.name]: event.target.value}))
-    }
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
       axios.post('http://localhost:3000/login', values)
       .then((res) => {
@@ -21,6 +19,10 @@ export default function Login() {
         }
       })
       .catch(err => console.log(err))
+    }
+
+    const handleInput = async (event) => { 
+      setValues(prev => ({...prev, [event.target.name]: event.target.value}))
     }
 
     useEffect(() => {
@@ -62,9 +64,17 @@ export default function Login() {
                 onChange={handleInput}
               />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Login
-            </Button>
+            <Button variant="primary"
+            onClick={async () => {
+              const user = { username: values.username, password: values.password };
+              try {
+                await axios.post(API + POST, user);
+                navigate("/home");
+              } catch (error) {
+                console.log(error.message);
+              }
+            }}
+          >Login</Button>
           </Form>
           <p>{error}</p>
           </Container>

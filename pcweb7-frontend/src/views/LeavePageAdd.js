@@ -117,7 +117,7 @@ export default function LeavePageAdd() {
               const leave = { title, description, document, status, num_days, start_date, end_date };
               try {
                 await axios.post(API + ADD + "/" + id, leave);
-                navigate("/");
+                navigate("/home");
               } catch (error) {
                 console.log(error.message);
               }

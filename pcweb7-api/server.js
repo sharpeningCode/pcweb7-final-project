@@ -29,14 +29,6 @@ async function getUser(id) {
     return rows[0];
 }
 
-async function addUser(username, email, password, role) {
-    const [result] = await pool.query(
-        "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", [username, email, password, role]
-    );
-    const id = result.insertId;
-    return getUser(id);
-}
-
 async function deleteUser(id) {
     await pool.query(
         "DELETE FROM users WHERE id = ?", [id]
@@ -48,10 +40,10 @@ app.get("/users/all", async (req, res) => {
     res.send(all).status(200);
 });
 
-app.post('/register', async (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, email, password, role } = req.body;
     const register = await register(username, email, password, role);
-    console.log("User added: ", leave);
+    console.log("User login: ", leave);
     res.send({ status: "success" }).status(200);
 });
 
@@ -67,7 +59,23 @@ app.delete("/user/:id", async (req, res) => {
     res.send({ status: "success" }).status(200);
 });
 
-// Holding place for user session
+// register user (by admin)
+async function register(username, email, password, role) {
+    const [result] = await pool.query(
+        "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)", [username, email, password, role]
+    );
+    const id = result.insertId;
+    return getUser(id);
+}
+
+app.post('/register', async (req, res) => {
+    const { username, email, password, role } = req.body;
+    const register = await register(username, email, password, role);
+    console.log("User added: ", leave);
+    res.send({ status: "success" }).status(200);
+});
+
+// login user
 app.get('/login' , (req, res) => {
     if (req.session.username) {
         return res.json({valid: true, role: req.session.role})
@@ -75,6 +83,18 @@ app.get('/login' , (req, res) => {
         return res.json({valid: false})
     }
 })
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await getUser(username, password);
+    if (user) {
+        req.session.username = username;
+        req.session.password = user.password;
+        return res.json({valid: true, role: user.password})
+    } else {
+        return res.json({valid: false})
+    }
+});
 
 // Database table: leave_summary
 async function getLeave(id) {
